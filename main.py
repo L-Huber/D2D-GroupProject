@@ -1,24 +1,33 @@
-from bs4 import BeautifulSoup
-import re
+import pandas as pd
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import torch
 
-# Open the HTML file and read its content
-with open('your_file.html', 'r') as f:
-    content = f.read()
+# Load CSV file
+df = pd.read_csv('gyg_data.csv')
 
-# Parse the HTML content
-soup = BeautifulSoup(content, 'html.parser')
+# Fill NaN values in "description" column with an empty string
+df['description'] = df['description'].fillna('')
 
-# Find all the elements with the attribute `href`
-elements = soup.find_all(href=True)
+# Load model and tokenizer
+tokenizer = AutoTokenizer.from_pretrained('ml6team/keyphrase-generation-t5-small-inspec')
+model = AutoModelForSeq2SeqLM.from_pretrained('ml6team/keyphrase-generation-t5-small-inspec')
 
-# Define the pattern for the links
-pattern = r'^https://www\.musement\.com/us/new-york/.+-\d{4,6}/$'
+# Define function to extract keywords
+def extract_keywords(text):
+    # Check if the input is a string
+    if isinstance(text, str):
+        encoded_input = tokenizer(text, padding=True, truncation=True, return_tensors='pt')
+        outputs = model.generate(encoded_input['input_ids'], num_beams=4, max_length=50, early_stopping=True)
+        keywords = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return keywords
+    else:
+        return None  # Return None or some default value for non-string inputs
 
-# Extract the `href` attribute from these elements and check if it matches the pattern
-links = [element.get('href') for element in elements if re.match(pattern, element.get('href'))]
+# Apply function to "description" column to create "keywords" column
+df['keywords'] = df['description'].apply(extract_keywords)
 
-# Remove 'None' elements
-links = [link for link in links if link is not None]
-# Print the list
-print(links)
-print(len(links))
+# Print DataFrame
+print(df)
+
+# Save DataFrame back to CSV
+df.to_csv('gyg_data.csv', index=False)
