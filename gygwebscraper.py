@@ -15,11 +15,11 @@ def webscraping():
     #ref: for csv: https://www.geeksforgeeks.org/working-csv-files-python/
     #define fields to save data
     fields = ['link', 'name', 'price','description','total_rating','number_of_ratings','category','guide_rating','transportation_rating','value_for_money_rating','service_rating','organization_rating']
-    filename = "gyg_scraped_data.csv"
+    filename = "example.csv"
     rows = []
     #use index so start by 0
     start_scrape_number = 0
-    end_scrape_number = 6
+    end_scrape_number = 1
 
     #open browser
     browser = webdriver.Firefox()
