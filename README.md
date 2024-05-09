@@ -12,7 +12,7 @@ Die Pythonskripts, welche aus den Datensätzen mithilfe des Language Models die 
 ## linkextractors<br />
 Diese Skripte gehören zum Scraping. Sie extrahieren aus den html Dateien die Links zu den einzelnen Events.<br />
 ## plots<br />
-Die Plots, welche in Pyhton erstellt wurden + das Skript.<br />
+Die Plots, welche in Pyhton erstellt wurden + das jupyter notebook.<br />
 ## scrapers<br />
 Die eigentlichen Scraper für die jeweilige website.
 
